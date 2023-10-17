@@ -19,6 +19,16 @@ document.addEventListener('DOMContentLoaded', function() {
     btnAddContact.addEventListener('click', addContact);
     app.appendChild(btnAddContact);
 
+    const btnDeleteContact = document.createElement('button');
+    btnDeleteContact.textContent = 'Delete Contact';
+    btnDeleteContact.addEventListener('clock', deleteContact);
+    app.appendChild(btnDeleteContact);
+
+    const btnSaveContacts = document.createElement('button');
+    btnSaveContacts.textContent = 'Save Contacts';
+    btnSaveContacts.addEventListener('click', saveContacts);
+    app.appendChild(btnSaveContacts);
+
     const datalist = document.createElement('div');
     datalist.id = 'datalist';
     app.appendChild(datalist);
@@ -46,9 +56,25 @@ const populateData = (data) => {
 };
 
 const addContact = () => {
-    let name = promt('Ange namn');
+    let name = prompt('Ange namn');
     let contacts = JSON.parse(localStorage.getItem('contacts'));
     contacts.push({name});
-    localStorage.setItem('contacts', JSON.stringify('contacts'));
-    populateData(contacts)
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    populateData(contacts);
+};
+
+const deleteContact = () => {
+    let name = prompt('Ange namn att ta bort');
+    let contacts = JSON.parse(localStorage.getItem('contacts'));
+    
 }
+
+const saveContacts = () => {
+    fetch('/newData', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: localStorage.getItem('contacts'),
+    });
+};
