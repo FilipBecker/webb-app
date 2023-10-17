@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const btnDeleteContact = document.createElement('button');
     btnDeleteContact.textContent = 'Delete Contact';
-    btnDeleteContact.addEventListener('clock', deleteContact);
+    btnDeleteContact.addEventListener('click', deleteContact);
     app.appendChild(btnDeleteContact);
 
     const btnSaveContacts = document.createElement('button');
@@ -66,8 +66,14 @@ const addContact = () => {
 const deleteContact = () => {
     let name = prompt('Ange namn att ta bort');
     let contacts = JSON.parse(localStorage.getItem('contacts'));
-    
-}
+    let index = contacts.indexOf(contacts.find((contact) => contact.name = name));
+    if (index != -1) {
+        contacts.splice(index, 1);
+    };
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    saveContacts();
+    populateData(contacts);
+};
 
 const saveContacts = () => {
     fetch('/newData', {
