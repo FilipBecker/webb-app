@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', function() {
     btnDeleteContact.addEventListener('click', deleteContact);
     app.appendChild(btnDeleteContact);
 
+    const btnChangeContact = document.createElement('button');
+    btnChangeContact.textContent = 'Change Contact';
+    btnChangeContact.addEventListener('click', changeContact);
+    app.appendChild(btnChangeContact);
+
     const btnSaveContacts = document.createElement('button');
     btnSaveContacts.textContent = 'Save Contacts';
     btnSaveContacts.addEventListener('click', saveContacts);
@@ -69,6 +74,19 @@ const deleteContact = () => {
     let index = contacts.indexOf(contacts.find((contact) => contact.name = name));
     if (index != -1) {
         contacts.splice(index, 1);
+    };
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    saveContacts();
+    populateData(contacts);
+};
+
+const changeContact = () => {
+    let oldName = prompt('Ange namn att ändra');
+    let newName = prompt('Ange nytt namn');
+    contacts = JSON.parse(localStorage.getItem('contacts'));
+    let index = contacts.indexOf(contacts.find((contact) => contact.name = oldName));
+    if (index != -1) {
+        contacts[index].name = newName;
     };
     localStorage.setItem('contacts', JSON.stringify(contacts));
     saveContacts();
