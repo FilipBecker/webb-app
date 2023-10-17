@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', loadData);
     app.appendChild(btn);
 
+    const btnAddContact = document.createElement('button');
+    btnAddContact.textContent = 'Add Contact';
+    btnAddContact.addEventListener('click', addContact);
+    app.appendChild(btnAddContact);
+
     const datalist = document.createElement('div');
     datalist.id = 'datalist';
     app.appendChild(datalist);
@@ -22,7 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
 const loadData = () => {
     fetch('/data')
         .then(response => response.json())
-        .then(data => populateData(data))
+        .then(data => {
+            localStorage.setItem('contacts', JSON.stringify(data));
+            populateData(data);
+        })
 };
 
 const populateData = (data) => {
@@ -36,3 +44,11 @@ const populateData = (data) => {
     })
     datalist.appendChild(ul);
 };
+
+const addContact = () => {
+    let name = promt('Ange namn');
+    let contacts = JSON.parse(localStorage.getItem('contacts'));
+    contacts.push({name});
+    localStorage.setItem('contacts', JSON.stringify('contacts'));
+    populateData(contacts)
+}
