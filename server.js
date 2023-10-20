@@ -45,6 +45,34 @@ app.get('/contacts', (req, res) => {
     });
 });
 
+app.post('/contacts', (req, res) => {
+    base('contacts').create([
+        {
+            "fields": {
+                "Name": req.body.name,
+                "Email": req.body.email
+            }
+        }
+    ], 
+    (err, records) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        res.sendStatus(200);
+    });
+});
+
+app.delete('/contacts', (req, res) => {
+    base('contacts').destroy([req.body.id],
+    (err, deletedRecords) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        res.sendStatus(200);
+    });
+});
 
 app.post('/newData', (req, res) => {
     console.log(req.body);

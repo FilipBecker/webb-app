@@ -29,18 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
     btnChangeContact.addEventListener('click', changeContact);
     app.appendChild(btnChangeContact);
 
-    const btnSaveContacts = document.createElement('button');
-    btnSaveContacts.textContent = 'Save Contacts';
-    btnSaveContacts.addEventListener('click', saveContacts);
-    app.appendChild(btnSaveContacts);
-
     const datalist = document.createElement('div');
     datalist.id = 'datalist';
     app.appendChild(datalist);
 });
 
 const loadData = () => {
-    fetch('/data')
+    fetch('/contacts')
         .then(response => response.json())
         .then(data => {
             localStorage.setItem('contacts', JSON.stringify(data));
@@ -54,7 +49,7 @@ const populateData = (data) => {
     const ul = document.createElement('ul');
     data.forEach(contact => {
         const li = document.createElement('li');
-        li.innerText = contact.name;
+        li.innerText = contact.name.concat(" - ", contact.email);
         ul.appendChild(li);
     })
     datalist.appendChild(ul);
@@ -62,21 +57,28 @@ const populateData = (data) => {
 
 const addContact = () => {
     let name = prompt('Ange namn');
+    let email = prompt('Ange email');
+    let newContact = {
+        name: name,
+        email: email
+    };
     let contacts = JSON.parse(localStorage.getItem('contacts'));
-    contacts.push({name});
+    contacts.push(newContact);
     localStorage.setItem('contacts', JSON.stringify(contacts));
+    saveContacts(newContact);
     populateData(contacts);
 };
 
 const deleteContact = () => {
     let name = prompt('Ange namn att ta bort');
     let contacts = JSON.parse(localStorage.getItem('contacts'));
-    let index = contacts.indexOf(contacts.find((contact) => contact.name = name));
+    let remove = contacts.find((contact) => contact.name == name);
+    let index = contacts.indexOf(remove);
     if (index != -1) {
         contacts.splice(index, 1);
     };
     localStorage.setItem('contacts', JSON.stringify(contacts));
-    saveContacts();
+    delContact(remove);
     populateData(contacts);
 };
 
@@ -84,7 +86,7 @@ const changeContact = () => {
     let oldName = prompt('Ange namn att ändra');
     let newName = prompt('Ange nytt namn');
     contacts = JSON.parse(localStorage.getItem('contacts'));
-    let index = contacts.indexOf(contacts.find((contact) => contact.name = oldName));
+    let index = contacts.indexOf(contacts.find((contact) => contact.name == oldName));
     if (index != -1) {
         contacts[index].name = newName;
     };
@@ -93,12 +95,22 @@ const changeContact = () => {
     populateData(contacts);
 };
 
-const saveContacts = () => {
-    fetch('/newData', {
+const saveContacts = (contact) => {
+    fetch('/contacts', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: localStorage.getItem('contacts'),
+        body: JSON.stringify(contact),
+    });
+};
+
+const delContact = (contact) => {
+    fetch('/contacts', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contact),
     });
 };
