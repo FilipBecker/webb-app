@@ -1,4 +1,6 @@
 // patE46Xvbf22EGjjh.9d191bb9ebd68513b3721b670b0b95a4cc56a614f57b47851144afc6d212fb36
+const Airtable = require('airtable');
+const base = new Airtable({apiKey: 'patE46Xvbf22EGjjh.9d191bb9ebd68513b3721b670b0b95a4cc56a614f57b47851144afc6d212fb36'}).base('app1p7ogrBx2EnAoN');
 
 const express = require('express');
 const fs = require('fs');
@@ -18,6 +20,31 @@ app.get('/data', (req,res) => {
         res.json(JSON.parse(data));
     } );
 });
+
+app.get('/contacts', (req, res) => {
+    let contacts = [];
+
+    base('contacts').select({
+        view: 'Grid view'
+    }).eachPage((records, fetchNextPage) => {
+        records.forEach(record => {
+            contacts.push({
+                id: record.id,
+                name: record.get('Name'),
+                email: record.get('Email')
+            });
+        });
+        fetchNextPage();
+    }, (err) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server Error');
+            return;
+        }
+        res.json(contacts);
+    });
+});
+
 
 app.post('/newData', (req, res) => {
     console.log(req.body);
