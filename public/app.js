@@ -24,21 +24,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const btn = document.createElement('button');
     btn.textContent = 'Load data';
     btn.addEventListener('click', loadData);
+    btn.classList.add('btn');
+    btn.classList.add('btn-info');
     addNavBtn(btn, navUl);
 
     const btnAddContact = document.createElement('button');
     btnAddContact.textContent = 'Add Contact';
     btnAddContact.addEventListener('click', addContact);
+    btnAddContact.classList.add('btn');
+    btnAddContact.classList.add('btn-primary');
     addNavBtn(btnAddContact, navUl);
 
     const btnDeleteContact = document.createElement('button');
     btnDeleteContact.textContent = 'Delete Contact';
     btnDeleteContact.addEventListener('click', deleteContact);
+    btnDeleteContact.classList.add('btn');
+    btnDeleteContact.classList.add('btn-danger');
     addNavBtn(btnDeleteContact, navUl);
 
     const btnChangeContact = document.createElement('button');
     btnChangeContact.textContent = 'Change Contact';
     btnChangeContact.addEventListener('click', changeContact);
+    btnChangeContact.classList.add('btn');
+    btnChangeContact.classList.add('btn-secondary');
     addNavBtn(btnChangeContact, navUl);
 
     navDiv.appendChild(navUl);
