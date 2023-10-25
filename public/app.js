@@ -10,43 +10,34 @@ document.addEventListener('DOMContentLoaded', function() {
     app.appendChild(p);
 
     const nav = document.createElement('nav');
-    nav.classList.add('navbar');
-    nav.classList.add('navbar-expand-lg');
-    nav.classList.add('bg-body-tertiery')
+    nav.classList.add('navbar', 'navbar-expand-lg', 'bg-body-tertiery');
     const navDiv = document.createElement('div');
     navDiv.classList.add('container-fluid');
     const navUl = document.createElement('ul');
-    navUl.classList.add('navbar-nav');
-    navUl.classList.add('me-auto');
-    navUl.classList.add('mb-2');
-    navUl.classList.add('mb-lg-0');
+    navUl.classList.add('navbar-nav', 'me-auto', 'mb-2', 'mb-lg-0');
 
     const btn = document.createElement('button');
     btn.textContent = 'Load data';
     btn.addEventListener('click', loadData);
-    btn.classList.add('btn');
-    btn.classList.add('btn-info');
+    btn.classList.add('btn', 'btn-info');
     addNavBtn(btn, navUl);
 
     const btnAddContact = document.createElement('button');
     btnAddContact.textContent = 'Add Contact';
     btnAddContact.addEventListener('click', addContact);
-    btnAddContact.classList.add('btn');
-    btnAddContact.classList.add('btn-primary');
+    btnAddContact.classList.add('btn', 'btn-primary');
     addNavBtn(btnAddContact, navUl);
 
     const btnDeleteContact = document.createElement('button');
     btnDeleteContact.textContent = 'Delete Contact';
     btnDeleteContact.addEventListener('click', deleteContact);
-    btnDeleteContact.classList.add('btn');
-    btnDeleteContact.classList.add('btn-danger');
+    btnDeleteContact.classList.add('btn', 'btn-danger');
     addNavBtn(btnDeleteContact, navUl);
 
     const btnChangeContact = document.createElement('button');
     btnChangeContact.textContent = 'Change Contact';
     btnChangeContact.addEventListener('click', changeContact);
-    btnChangeContact.classList.add('btn');
-    btnChangeContact.classList.add('btn-secondary');
+    btnChangeContact.classList.add('btn', 'btn-secondary');
     addNavBtn(btnChangeContact, navUl);
 
     navDiv.appendChild(navUl);
@@ -71,9 +62,15 @@ const populateData = (data) => {
     const datalist = document.getElementById('datalist');
     datalist.innerHTML = '';
     const ul = document.createElement('ul');
+    ul.classList.add('list-group');
     data.forEach(contact => {
         const li = document.createElement('li');
-        li.innerText = contact.name.concat(" - ", contact.email);
+        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-item-center');
+        li.innerText = contact.name;
+        const span = document.createElement('span');
+        span.classList.add('badge', 'bg-secondary', 'rounded-pill');
+        span.innerText = contact.email;
+        li.appendChild(span);
         ul.appendChild(li);
     })
     datalist.appendChild(ul);
