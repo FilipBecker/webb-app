@@ -74,15 +74,17 @@ const populateData = (data) => {
 const addContact = () => {
     let name = prompt('Ange namn');
     let email = prompt('Ange email');
-    let newContact = {
-        name: name,
-        email: email
+    if (name != '' && email != '') {
+        let newContact = {
+            name: name,
+            email: email
+        };
+        let contacts = JSON.parse(localStorage.getItem('contacts'));
+        contacts.push(newContact);
+        localStorage.setItem('contacts', JSON.stringify(contacts));
+        saveContacts(newContact);
+        populateData(contacts);
     };
-    let contacts = JSON.parse(localStorage.getItem('contacts'));
-    contacts.push(newContact);
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-    saveContacts(newContact);
-    populateData(contacts);
 };
 
 const deleteContact = () => {
