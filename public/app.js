@@ -9,25 +9,41 @@ document.addEventListener('DOMContentLoaded', function() {
     p.textContent = 'Hello from client js';
     app.appendChild(p);
 
+    const nav = document.createElement('nav');
+    nav.classList.add('navbar');
+    nav.classList.add('navbar-expand-lg');
+    nav.classList.add('bg-body-tertiery')
+    const navDiv = document.createElement('div');
+    navDiv.classList.add('container-fluid');
+    const navUl = document.createElement('ul');
+    navUl.classList.add('navbar-nav');
+    navUl.classList.add('me-auto');
+    navUl.classList.add('mb-2');
+    navUl.classList.add('mb-lg-0');
+
     const btn = document.createElement('button');
     btn.textContent = 'Load data';
     btn.addEventListener('click', loadData);
-    app.appendChild(btn);
+    addNavBtn(btn, navUl);
 
     const btnAddContact = document.createElement('button');
     btnAddContact.textContent = 'Add Contact';
     btnAddContact.addEventListener('click', addContact);
-    app.appendChild(btnAddContact);
+    addNavBtn(btnAddContact, navUl);
 
     const btnDeleteContact = document.createElement('button');
     btnDeleteContact.textContent = 'Delete Contact';
     btnDeleteContact.addEventListener('click', deleteContact);
-    app.appendChild(btnDeleteContact);
+    addNavBtn(btnDeleteContact, navUl);
 
     const btnChangeContact = document.createElement('button');
     btnChangeContact.textContent = 'Change Contact';
     btnChangeContact.addEventListener('click', changeContact);
-    app.appendChild(btnChangeContact);
+    addNavBtn(btnChangeContact, navUl);
+
+    navDiv.appendChild(navUl);
+    nav.appendChild(navDiv);
+    app.appendChild(nav);
 
     const datalist = document.createElement('div');
     datalist.id = 'datalist';
@@ -35,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const loadData = () => {
-    fetch('/contacts')
+    fetch('/contacts') 
         .then(response => response.json())
         .then(data => {
             localStorage.setItem('contacts', JSON.stringify(data));
@@ -93,6 +109,13 @@ const changeContact = () => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
     saveContacts();
     populateData(contacts);
+};
+
+const addNavBtn = (btn, navUl) => {
+    let li = document.createElement('li');
+    li.classList.add('nav-item');
+    li.appendChild(btn);
+    navUl.appendChild(li);
 };
 
 const saveContacts = (contact) => {
