@@ -9,47 +9,20 @@ document.addEventListener('DOMContentLoaded', function() {
     p.textContent = 'Hello from client js';
     app.appendChild(p);
 
-    const nav = document.createElement('nav');
-    nav.classList.add('navbar', 'navbar-expand-lg', 'bg-body-tertiery');
-    const navDiv = document.createElement('div');
-    navDiv.classList.add('container-fluid');
-    const navUl = document.createElement('ul');
-    navUl.classList.add('navbar-nav', 'me-auto', 'mb-2', 'mb-lg-0');
-
     const btn = document.createElement('button');
     btn.textContent = 'Load data';
     btn.addEventListener('click', loadData);
     btn.classList.add('btn', 'btn-info');
-    addNavBtn(btn, navUl);
+    addNavBtn(btn);
 
     const btnAddContact = document.createElement('button');
     btnAddContact.textContent = 'Add Contact';
-    btnAddContact.addEventListener('click', addContact);
+    btnAddContact.addEventListener('click', showAdd);
     btnAddContact.classList.add('btn', 'btn-primary');
-    addNavBtn(btnAddContact, navUl);
-
-    const btnDeleteContact = document.createElement('button');
-    btnDeleteContact.textContent = 'Delete Contact';
-    btnDeleteContact.addEventListener('click', deleteContact);
-    btnDeleteContact.classList.add('btn', 'btn-danger');
-    addNavBtn(btnDeleteContact, navUl);
-
-    const btnChangeContact = document.createElement('button');
-    btnChangeContact.textContent = 'Change Contact';
-    btnChangeContact.addEventListener('click', changeContact);
-    btnChangeContact.classList.add('btn', 'btn-secondary');
-    addNavBtn(btnChangeContact, navUl);
-
-    navDiv.appendChild(navUl);
-    nav.appendChild(navDiv);
-    app.appendChild(nav);
-
-    const datalist = document.createElement('div');
-    datalist.id = 'datalist';
-    app.appendChild(datalist);
+    addNavBtn(btnAddContact);
 });
 
-const loadData = () => {
+const loadData = async () => {
     fetch('/contacts') 
         .then(response => response.json())
         .then(data => {
@@ -59,54 +32,61 @@ const loadData = () => {
 };
 
 const populateData = (data) => {
-    const datalist = document.getElementById('datalist');
-    datalist.innerHTML = '';
-    const ul = document.createElement('ul');
-    ul.classList.add('list-group');
+    const infoTable = document.getElementById('infoTable');
+    infoTable.innerHTML = '';
     data.forEach(contact => {
-        const li = document.createElement('li');
-        li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-item-center');
-        li.innerText = contact.name;
-        const span = document.createElement('span');
-        span.classList.add('badge', 'bg-secondary', 'rounded-pill');
-        span.innerText = contact.email;
-        li.appendChild(span);
-        ul.appendChild(li);
-    })
-    datalist.appendChild(ul);
+        const tr = document.createElement('tr');
+        const tdNamn = document.createElement('td');
+        const tdEmail = document.createElement('td');
+        const tdButtons = document.createElement('td');
+        tdNamn.innerText = contact.name;
+        tdEmail.innerText = contact.email;
+        tdButtons.innerHTML = `
+            <button class="btn btn-primary btn-sm" onclick="changeContact(${contact.name})">Redigera</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteContact('${contact.id}')">Radera</button>`;
+        tdEmail.classList.add('bg-info', 'rounded-pill');
+        tr.appendChild(tdNamn);
+        tr.appendChild(tdEmail);
+        tr.appendChild(tdButtons);
+        infoTable.appendChild(tr);
+    });
 };
 
+const showAdd = () => {
+    let form = document.getElementById('form');
+    form.style.display = "block";
+}
+
 const addContact = () => {
-    let name = prompt('Ange namn');
-    let email = prompt('Ange email');
+    let name = document.forms["addCon"]["Name"].value;
+    let email = document.forms["addCon"]["Email"].value;
     if (name != '' && email != '') {
         let newContact = {
             name: name,
             email: email
         };
-        let contacts = JSON.parse(localStorage.getItem('contacts'));
-        contacts.push(newContact);
-        localStorage.setItem('contacts', JSON.stringify(contacts));
         saveContacts(newContact);
-        populateData(contacts);
+        document.forms["addCon"]["Name"].value = '';
+        document.forms["addCon"]["Email"].value = '';
+        let form = document.getElementById('form');
+        form.style.display = "none";
     };
+    loadData();
 };
 
-const deleteContact = () => {
-    let name = prompt('Ange namn att ta bort');
+const deleteContact = (id) => {
     let contacts = JSON.parse(localStorage.getItem('contacts'));
-    let remove = contacts.find((contact) => contact.name == name);
+    let remove = contacts.find((contact) => contact.id == id);
     let index = contacts.indexOf(remove);
     if (index != -1) {
         contacts.splice(index, 1);
     };
     localStorage.setItem('contacts', JSON.stringify(contacts));
-    delContact(remove);
+    delContact(id);
     populateData(contacts);
 };
 
-const changeContact = () => {
-    let oldName = prompt('Ange namn att ändra');
+const changeContact = (oldName) => {
     let newName = prompt('Ange nytt namn');
     contacts = JSON.parse(localStorage.getItem('contacts'));
     let index = contacts.indexOf(contacts.find((contact) => contact.name == oldName));
@@ -118,14 +98,12 @@ const changeContact = () => {
     populateData(contacts);
 };
 
-const addNavBtn = (btn, navUl) => {
-    let li = document.createElement('li');
-    li.classList.add('nav-item');
-    li.appendChild(btn);
-    navUl.appendChild(li);
+const addNavBtn = (btn) => {
+    const navDiv = document.getElementById('navDiv');
+    navDiv.appendChild(btn);
 };
 
-const saveContacts = (contact) => {
+const saveContacts = async (contact) => {
     fetch('/contacts', {
         method: 'POST',
         headers: {
@@ -135,12 +113,8 @@ const saveContacts = (contact) => {
     });
 };
 
-const delContact = (contact) => {
-    fetch('/contacts', {
+const delContact = (id) => {
+    fetch(`/contacts/${id}`, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contact),
-    });
+        });
 };

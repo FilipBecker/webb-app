@@ -45,7 +45,7 @@ app.get('/contacts', (req, res) => {
     });
 });
 
-app.post('/contacts', (req, res) => {
+app.post('/contacts', async (req, res) => {
     base('contacts').create([
         {
             "fields": {
@@ -63,8 +63,8 @@ app.post('/contacts', (req, res) => {
     });
 });
 
-app.delete('/contacts', (req, res) => {
-    base('contacts').destroy([req.body.id],
+app.delete('/contacts/:id', async (req, res) => {
+    base('contacts').destroy([req.params.id],
     (err, deletedRecords) => {
         if (err) {
             console.error(err);
